@@ -1,7 +1,10 @@
 package com.fatihb.sur;
 
+import static com.badlogic.gdx.Gdx.graphics;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -24,10 +27,12 @@ public class SurvivorBird extends ApplicationAdapter {
 	BitmapFont font;
 	BitmapFont font2;
 	BitmapFont font3;
+	//Preferences prefs = Gdx.app.getPreferences("My Preferences");
+
 	//ShapeRenderer shapeRenderer;
 
 	int score=0;
-	int temp = 0;
+	int bestScore = 0;
 	int scoredEnemy=0;
 	float birdX;
 	float birdY;
@@ -44,7 +49,7 @@ public class SurvivorBird extends ApplicationAdapter {
 	int gameState = 0;
 	float velocity=0;
 	float enemyVelocity=7;
-	float grat= 0.8f;
+	float grata = 0.8f;
 
 	@Override
 	public void create () {
@@ -55,11 +60,11 @@ public class SurvivorBird extends ApplicationAdapter {
 		enemy2 = new Texture("enemy.png");
 		enemy3 = new Texture("enemy.png");
 
-		distance = Gdx.graphics.getWidth()/2;
+		distance = graphics.getWidth() >> 1;
 		random = new Random();
 
-		birdX=Gdx.graphics.getWidth()/7;
-		birdY=Gdx.graphics.getHeight()/2;
+		birdX= (float) (graphics.getWidth()/7.0);
+		birdY= graphics.getHeight() >> 1;
 
 		birdCircle = new Circle();
 		enemyCircle1=new Circle[numberOfEnemies];
@@ -77,14 +82,15 @@ public class SurvivorBird extends ApplicationAdapter {
 		font3.getData().setScale(7);
 
 
+
 		//shapeRenderer = new ShapeRenderer();
 
 		for (int i=0; i<numberOfEnemies; i++){
-			enemyOffset1[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
-			enemyOffset2[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
-			enemyOffset3[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
+			enemyOffset1[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
+			enemyOffset2[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
+			enemyOffset3[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
 
-			enemyX[i]=Gdx.graphics.getWidth()-enemy1.getWidth()/2+i*distance;
+			enemyX[i]= graphics.getWidth()- (enemy1.getWidth() >> 1) +i*distance;
 
 			enemyCircle1[i]= new Circle();
 			enemyCircle2[i]= new Circle();
@@ -97,7 +103,9 @@ public class SurvivorBird extends ApplicationAdapter {
 	@Override
 	public void render () {
 		spriteBatch.begin();
-		spriteBatch.draw(back,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+		spriteBatch.draw(back,0,0, graphics.getWidth(), graphics.getHeight());
+		//bestScore = prefs.getInteger("best_score",0);
+
 
 		if (gameState==1){
 			if (enemyX[scoredEnemy]<birdX){
@@ -119,38 +127,38 @@ public class SurvivorBird extends ApplicationAdapter {
 				if (enemyX[i]<0){
 					enemyX[i]=enemyX[i]+numberOfEnemies*distance;
 
-					enemyOffset1[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
-					enemyOffset2[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
-					enemyOffset3[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
+					enemyOffset1[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
+					enemyOffset2[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
+					enemyOffset3[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
 				}else {
 					enemyX[i]=enemyX[i]-enemyVelocity;
 				}
 				enemyX[i]=enemyX[i]-enemyVelocity;
-				spriteBatch.draw(enemy1,enemyX[i],Gdx.graphics.getHeight()/2-enemyOffset1[i],Gdx.graphics.getWidth()/14,Gdx.graphics.getHeight()/10);
-				spriteBatch.draw(enemy2,enemyX[i],Gdx.graphics.getHeight()/2-enemyOffset2[i],Gdx.graphics.getWidth()/14,Gdx.graphics.getHeight()/10);
-				spriteBatch.draw(enemy3,enemyX[i],Gdx.graphics.getHeight()/2-enemyOffset3[i],Gdx.graphics.getWidth()/14,Gdx.graphics.getHeight()/10);
-				enemyCircle1[i] = new Circle(enemyX[i]+Gdx.graphics.getWidth()/28,Gdx.graphics.getHeight()/2-enemyOffset1[i]+Gdx.graphics.getHeight()/20,Gdx.graphics.getWidth()/35);
-				enemyCircle2[i] = new Circle(enemyX[i]+Gdx.graphics.getWidth()/28,Gdx.graphics.getHeight()/2-enemyOffset2[i]+Gdx.graphics.getHeight()/20,Gdx.graphics.getWidth()/35);
+				spriteBatch.draw(enemy1,enemyX[i], (graphics.getHeight() >> 1) -enemyOffset1[i], (float) (graphics.getWidth()/14.0), (float) (graphics.getHeight()/10.0));
+				spriteBatch.draw(enemy2,enemyX[i], (graphics.getHeight() >> 1) -enemyOffset2[i], (float) (graphics.getWidth()/14.0), (float) (graphics.getHeight()/10.0));
+				spriteBatch.draw(enemy3,enemyX[i], (graphics.getHeight() >> 1) -enemyOffset3[i], (float) (graphics.getWidth()/14.0), (float) (graphics.getHeight()/10.0));
+				enemyCircle1[i] = new Circle((float) (enemyX[i]+ graphics.getWidth()/28.0), (float) ((graphics.getHeight() >> 1) -enemyOffset1[i]+ graphics.getHeight()/20.0), (float) (graphics.getWidth()/35.0));
+				enemyCircle2[i] = new Circle((float) (enemyX[i]+ graphics.getWidth()/28.0), (float) ((graphics.getHeight() >> 1) -enemyOffset2[i]+ graphics.getHeight()/20.0), (float) (graphics.getWidth()/35.0));
 
 				int dist1 = (int) ((int)Math.pow(enemyCircle1[i].x - enemyCircle2[i].x,2) + Math.pow(enemyCircle1[i].y - enemyCircle2[i].y,2));
 				int radSum1 = (int) Math.pow(enemyCircle1[i].radius + enemyCircle2[i].radius,2);
 				if (radSum1>=dist1){
-					enemyOffset2[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
-					enemyCircle2[i] = new Circle(enemyX[i]+Gdx.graphics.getWidth()/28,Gdx.graphics.getHeight()/2-enemyOffset2[i]+Gdx.graphics.getHeight()/20,Gdx.graphics.getWidth()/35);
+					enemyOffset2[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
+					enemyCircle2[i] = new Circle((float) (enemyX[i]+ graphics.getWidth()/28.0), (float) ((graphics.getHeight() >> 1) -enemyOffset2[i]+ graphics.getHeight()/20.0), (float) (graphics.getWidth()/35.0));
 				}
-				enemyCircle3[i] = new Circle(enemyX[i]+Gdx.graphics.getWidth()/28,Gdx.graphics.getHeight()/2-enemyOffset3[i]+Gdx.graphics.getHeight()/20,Gdx.graphics.getWidth()/35);
+				enemyCircle3[i] = new Circle((float) (enemyX[i]+ graphics.getWidth()/28.0), (float) (graphics.getHeight()/2-enemyOffset3[i]+ graphics.getHeight()/20.0), (float) (graphics.getWidth()/35.0));
 
 				int dist2 = (int) ((int)Math.pow(enemyCircle1[i].x - enemyCircle3[i].x,2) + Math.pow(enemyCircle1[i].y - enemyCircle3[i].y,2));
 				int radSum2 = (int) Math.pow(enemyCircle1[i].radius + enemyCircle3[i].radius,2);
 				int dist3 = (int) ((int)Math.pow(enemyCircle3[i].x - enemyCircle2[i].x,2) + Math.pow(enemyCircle3[i].y - enemyCircle2[i].y,2));
 				int radSum3 = (int) Math.pow(enemyCircle3[i].radius + enemyCircle2[i].radius,2);
 				if (radSum2>=dist2||radSum3>=dist3){
-					enemyOffset3[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
-					enemyCircle3[i] = new Circle(enemyX[i]+Gdx.graphics.getWidth()/28,Gdx.graphics.getHeight()/2-enemyOffset3[i]+Gdx.graphics.getHeight()/20,Gdx.graphics.getWidth()/28);
+					enemyOffset3[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
+					enemyCircle3[i] = new Circle((float) (enemyX[i]+ graphics.getWidth()/28.0), (float) ((graphics.getHeight() >> 1) -enemyOffset3[i]+ graphics.getHeight()/20.0), (float) (graphics.getWidth()/28.0));
 				}
 			}
-			if (birdY>0 && birdY<Gdx.graphics.getHeight()-Gdx.graphics.getHeight()/14) {
-				velocity = velocity+grat;
+			if (birdY>0 && birdY< graphics.getHeight()- graphics.getHeight()/20.0) {
+				velocity = velocity+ grata;
 				birdY = birdY - velocity;
 			}else {
 				gameState=2;
@@ -160,18 +168,18 @@ public class SurvivorBird extends ApplicationAdapter {
 				gameState = 1;
 			}
 		}else if (gameState==2){
-			font2.draw(spriteBatch,"GAME OVER!!",Gdx.graphics.getWidth()/4+30,Gdx.graphics.getHeight()/2+150);
-			font3.draw(spriteBatch,String.valueOf(score),Gdx.graphics.getWidth()/2-75,Gdx.graphics.getHeight()/3+150);
+			font2.draw(spriteBatch,"GAME OVER!!", (float) (graphics.getWidth()/3.0), (float) (graphics.getHeight()/1.7));
+			font3.draw(spriteBatch,String.valueOf(score), (float) (graphics.getWidth()/2.1), (float) (graphics.getHeight()/2.2));
 			if (Gdx.input.justTouched()){
 				gameState = 1;
-				birdY=Gdx.graphics.getHeight()/2;
+				birdY= graphics.getHeight() >> 1;
 
 				for (int i=0; i<numberOfEnemies; i++){
-					enemyOffset1[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
-					enemyOffset2[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
-					enemyOffset3[i]=(random.nextFloat()-0.5f)*(Gdx.graphics.getHeight()-200);
+					enemyOffset1[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
+					enemyOffset2[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
+					enemyOffset3[i]=(random.nextFloat()-0.5f)*(graphics.getHeight()-200);
 
-					enemyX[i]=Gdx.graphics.getWidth()-enemy1.getWidth()/2+i*distance;
+					enemyX[i]= graphics.getWidth()- (enemy1.getWidth() >> 1) +i*distance;
 
 					enemyCircle1[i]= new Circle();
 					enemyCircle2[i]= new Circle();
@@ -179,14 +187,19 @@ public class SurvivorBird extends ApplicationAdapter {
 				}
 				velocity=0;
 				scoredEnemy=0;
+				if (score>bestScore){
+					bestScore=score;
+					//prefs.putInteger("best_score", bestScore);
+				}
 				score=0;
 				enemyVelocity=7;
 			}
 		}
-		spriteBatch.draw(bird,birdX,birdY,Gdx.graphics.getWidth()/22,Gdx.graphics.getHeight()/18);
-		font.draw(spriteBatch,String.valueOf(score),100,200);
+		spriteBatch.draw(bird,birdX,birdY, (float) (graphics.getWidth()/22.0), (float) (graphics.getHeight()/18.0));
+		font.draw(spriteBatch,String.valueOf(score), (float) (graphics.getWidth()/20.0), (float) (graphics.getHeight()/8.95));
+		font.draw(spriteBatch,String.valueOf(bestScore), (float) (graphics.getWidth()/20.0), (float) (graphics.getHeight()/1.05));
 		spriteBatch.end();
-		birdCircle.set(birdX+Gdx.graphics.getWidth()/36,birdY+Gdx.graphics.getHeight()/28,Gdx.graphics.getWidth()/48);
+		birdCircle.set((float) (birdX+ graphics.getWidth()/45.0), (float) (birdY+ graphics.getHeight()/40.0), (float) (graphics.getWidth()/55.0));
 		//shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		//shapeRenderer.setColor(Color.BLACK);
 		//shapeRenderer.circle(birdCircle.x,birdCircle.y,birdCircle.radius);
